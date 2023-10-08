@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tic Tac Toe</title>
+  <style>
+    body {
+      background-color: purple;
+      text-align: center;
+    }
+
+    #board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      gap: 5px;
+      margin: 30px auto;
+      width: 300px;
+    }
+
+    .cell {
+      width: 100px;
+      height: 100px;
+      background-color: white;
+      font-size: 2em;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    #restart {
+      background-color: white;
+      color: purple;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Tic Tac Toe</h1>
+  <div id="board"></div>
+  <button id="restart">Restart Game</button>
+
+  <script>
+    const board = document.getElementById('board');
+    const cells = [];
+    const restartButton = document.getElementById('restart');
+    let currentPlayer = 'X';
+    let gameOver = false;
+
+    // Create the Tic Tac Toe board
+    for (let i = 0; i < 9; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.setAttribute('data-index', i);
+      cells.push(cell);
+      board.appendChild(cell);
+
+      cell.addEventListener('click', () => {
+        if (!gameOver && !cell.textContent) {
+          cell.textContent = currentPlayer;
+          checkWinner();
+          currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+        }
+      });
+    }
+
+    // Check for a winner
+    function checkWinner() {
+      const winningCombinations = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6],
+      ];
+
+      for (const combo of winningCombinations) {
+        const [a, b, c] = combo;
+        if (
+          cells[a].textContent &&
+          cells[a].textContent === cells[b].textContent &&
+          cells[a].textContent === cells[c].textContent
+        ) {
+          gameOver = true;
+          cells[a].style.backgroundColor = 'green';
+          cells[b].style.backgroundColor = 'green';
+          cells[c].style.backgroundColor = 'green';
+          alert(`Player ${currentPlayer === 'X' ? 'O' : 'X'} wins!`);
+        }
+      }
+
+      if (!cells.some((cell) => !cell.textContent)) {
+        gameOver = true;
+        alert("It's a draw!");
+      }
+    }
+
+    // Restart the game
+    restartButton.addEventListener('click', () => {
+      cells.forEach((cell) => {
+        cell.textContent = '';
+        cell.style.backgroundColor = 'white';
+      });
+      currentPlayer = 'X';
+      gameOver = false;
+    });
+  </script>
+</body>
+</html>
